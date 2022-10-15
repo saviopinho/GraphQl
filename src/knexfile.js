@@ -1,9 +1,11 @@
+const { user, password, database } = require('./.env');
+
 module.exports = {
     client: 'postgresql',
     connection: {
-        database: 'graphql',
-        user: 'root',
-        password: 'root',
+        database,
+        user,
+        password,
     },
     pool: {
         min: 2,
