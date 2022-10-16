@@ -1,9 +1,9 @@
 module.exports = {
     User: {
-        tasks(user, { dataSources }) {
+        async tasks({ id }, _, { dataSources }) {
             const { taskRegisterService } = dataSources;
 
-            return taskRegisterService.getTasks(user);
+            return await taskRegisterService.getTasks(id);
         },
     },
     Query: {

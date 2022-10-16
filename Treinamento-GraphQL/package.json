@@ -1,7 +1,8 @@
 {
-    "name": "@treinamento/treinamento-graphql",
+    "name": "treinamento-graphql",
     "version": "1.0.0",
-    "main": "./src/index.js",
+    "description": "",
+    "main": "index.js",
     "private": true,
     "scripts": {
         "start": "nodemon -e js,pug,gql",
@@ -18,5 +19,8 @@
     },
     "devDependencies": {
         "nodemon": "^2.0.20"
-    }
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
 }

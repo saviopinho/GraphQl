@@ -1,17 +1,50 @@
-const db = require('@treinamento/treinamento-graphql/src/db');
+const db = require('../db');
+const NoPermissionError = require('../errors/NoPermissionError');
+const TaskNotFoundError = require('../errors/TaskNotFoundError');
 
 class TaskRegisterService {
     constructor(service) {
         this.service = service;
     }
 
-    async addUser(user) {
+    async getTasks(user_id) {
+        return await this.service('tasks').where({ user_id });
+    }
+
+    async getTaskById(user_id, id) {
+        const task = await this.service('tasks').where({ id }).first();
+
+        if (!task) throw new TaskNotFoundError('Task not found');
+
+        if (task.user_id != user_id)
+            throw new NoPermissionError('User hasnt permission');
+
+        return task;
+    }
+
+    async addTask(user_id, data) {
         return await (
-            await this.service('users').insert(user).returning('*')
+            await this.service('tasks')
+                .insert({ user_id, ...data })
+                .returning('*')
         )[0];
     }
-    async getUserByLogin(login) {
-        return await this.service('users').where({ login }).first();
+
+    async deleteTask(user_id, id) {
+        await this.getTaskById(user_id, id);
+
+        return await this.service('tasks').where({ id }).delete();
+    }
+
+    async updateTask(user_id, id, data) {
+        await this.getTaskById(user_id, id);
+
+        return await (
+            await this.service('tasks')
+                .where({ id })
+                .update(data)
+                .returning('*')
+        )[0];
     }
 }
 

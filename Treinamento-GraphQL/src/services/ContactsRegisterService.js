@@ -1,4 +1,4 @@
-const db = require('@treinamento/treinamento-graphql/src/db');
+const db = require('../db');
 
 class ContactsRegisterService {
     constructor(service) {
