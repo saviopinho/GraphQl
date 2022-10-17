@@ -7,7 +7,15 @@ class GitHubService extends RESTDataSource {
     }
 
     async getUser(login) {
-        return await this.get(`/users/${login}`);
+        try {
+            return await this.get(`/users/${login}`);
+        } catch (error) {
+            if (error.extensions.response.status == 404) {
+                throw new Error(`User [${login}] not found.`);
+            }
+
+            throw new Error(error.message);
+        }
     }
 }
 

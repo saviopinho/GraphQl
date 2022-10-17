@@ -1,9 +1,11 @@
+const generator = require('../../../helpers/generator');
+
 module.exports = {
     User: {
-        tasks(user, { dataSources }) {
+        tasks({ id }, _, { dataSources }) {
             const { taskRegisterService } = dataSources;
 
-            return taskRegisterService.getTasks(user);
+            return taskRegisterService.getTasks(id);
         },
     },
     Query: {
@@ -11,15 +13,23 @@ module.exports = {
             const { gitHubService, userRegisterService } = dataSources;
             const found_user = await userRegisterService.getUserByLogin(login);
 
-            if (found_user) return found_user;
+            if (found_user) {
+                found_user.token = generator.createToken(found_user.id);
+
+                return found_user;
+            }
 
             const { login: login_git, avatar_url } =
                 await gitHubService.getUser(login);
 
-            return await userRegisterService.addUser({
+            const new_user = await userRegisterService.addUser({
                 login: login_git,
                 avatar_url,
             });
+
+            new_user.token = generator.createToken(found_user.id);
+
+            return new_user;
         },
     },
 };

@@ -1,9 +1,9 @@
 const { ApolloServer } = require('apollo-server');
 const graphql = require('@treinamento/treinamento-graphql/src/graphql');
-const ContactsRegisterService = require('@treinamento/treinamento-graphql/src/services/ContactsRegisterService');
 const UserRegisterService = require('@treinamento/treinamento-graphql/src/services/UserRegisterService');
 const TaskRegisterService = require('@treinamento/treinamento-graphql/src/services/TaskRegisterService');
 const GitHubService = require('@treinamento/treinamento-graphql/src/services/GitHubService');
+const generator = require('./helpers/generator');
 
 const server = new ApolloServer({
     ...graphql,
@@ -13,15 +13,25 @@ const server = new ApolloServer({
     dataSources: () => {
         return {
             gitHubService: GitHubService,
-            contactsRegisterService: ContactsRegisterService,
             userRegisterService: UserRegisterService,
             taskRegisterService: TaskRegisterService,
         };
     },
-    // context: () => ({
-    //     contactsRegisterService: ContactsRegisterService,
-    //     userRegisterService: UserRegisterService,
-    // }),
+    context: ({ req }) => {
+        const token = req.headers.authorization;
+
+        return {
+            validate() {
+                try {
+                    const { id } = generator.verifyToken(token);
+
+                    return id;
+                } catch (error) {
+                    throw new Error('Youre not authenticated.');
+                }
+            },
+        };
+    },
 });
 
 server.listen().then(({ url }) => console.log('[connected] at', url));

@@ -1,4 +1,4 @@
-const db = require('./config/database');
+const db = require('./Treinamento-GraphQL/src/db');
 const { gql, ApolloServer } = require('apollo-server');
 
 const resolvers = {
@@ -28,20 +28,48 @@ const resolvers = {
 
             return await db('users').where({ id }).first();
         },
+        async updateUser(_, { input }) {
+            const { name, email, password } = input;
+            const result = await db('users')
+                .insert({ name, email, password })
+                .returning('*');
+            const id = result[0].id;
+
+            console.log('createUser:', result);
+
+            return await db('users').where({ id }).first();
+        },
+        async deletezUser(_, { input }) {
+            const { name, email, password } = input;
+            const result = await db('users')
+                .insert({ name, email, password })
+                .returning('*');
+            const id = result[0].id;
+
+            console.log('createUser:', result);
+
+            return await db('users').where({ id }).first();
+        },
     },
 };
 
-const user_atributes = `
-    id: ID
-    name: String!
-    email: String!
-    password: String!
-    telefone: String!
-`;
-
 const typeDefs = gql`
     type User {
-        ${user_atributes}
+        id: ID
+        name: String!
+        email: String!
+        password: String!
+    }
+
+    input UserInput {
+        name: String!
+        email: String!
+        password: String!
+    }
+
+    input InputFilter {
+        id: ID
+        email: String!
     }
 
     type Query {
@@ -49,15 +77,13 @@ const typeDefs = gql`
         getUsers: [User]
     }
 
-    input UserInput {
-        ${user_atributes}
-    }
-
     type Mutation {
         createUser(input: UserInput): User
+        updateUser(id: ID!, input: UserInput): User
+        deleteUser(filter: InputFilter): Boolean
     }
 `;
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-server.listen();
+server.listen().then(() => console.log('connected'));
