@@ -1,8 +1,8 @@
 const { ApolloServer } = require('apollo-server');
-const graphql = require('@treinamento/treinamento-graphql/src/graphql');
-const UserRegisterService = require('@treinamento/treinamento-graphql/src/services/UserRegisterService');
-const TaskRegisterService = require('@treinamento/treinamento-graphql/src/services/TaskRegisterService');
-const GitHubService = require('@treinamento/treinamento-graphql/src/services/GitHubService');
+const graphql = require('../src/graphql');
+const UserRegisterService = require('../src/services/UserRegisterService');
+const TaskRegisterService = require('../src/services/TaskRegisterService');
+const GitHubService = require('../src/services/GitHubService');
 const generator = require('./helpers/generator');
 
 const server = new ApolloServer({

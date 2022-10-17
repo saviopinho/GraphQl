@@ -1,7 +1,7 @@
 {
-    "name": "@treinamento/treinamento-graphql",
+    "name": "@treinamento/simples",
     "version": "1.0.0",
-    "main": "./src/index.js",
+    "main": "index.js",
     "private": true,
     "scripts": {
         "start": "nodemon -e js,pug,gql",
